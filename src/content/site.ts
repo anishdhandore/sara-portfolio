@@ -123,8 +123,10 @@ export const movingImage = {
 export const about = {
   note: "just a girl\nwith a camera\nand a lot\nof dreams",
   paragraphs: [
-    "I'm Sara, a 12th grade student at Shishuvan School, studying Design and Media. I've always been drawn to stories — the ones we see, the ones we feel, and the ones we imagine.",
-    "Cinema, to me, is more than just a medium; it's a room you can return to, interpret differently as you change. I want to create films that connect people — just like theatre and conversations do.",
+    "I'm Sara, a student filmmaker. I've always been drawn to stories — the ones we see, the ones we feel, and the ones we imagine.",
+    "I'm especially interested in directing because I love bringing different elements together — performance, visuals, sound, writing, and the little details that make a story feel real. I find myself constantly observing people, conversations, places, and emotions, wondering how they could become part of a story.",
+    "Cinema, to me, is more than just a medium; it's a room you can return to, interpret differently as you change. I want to create films that connect people, just like conversations do. I want my films to make people feel something, see something from a different perspective, or find a part of themselves within a story.",
+    "My interest in filmmaking has grown through experimenting with short films, scripts, photography, theatre, and visual storytelling. This portfolio is a collection of that process — the stories I've created, the ideas I've explored, and the things I'm still learning as I find my voice as a filmmaker.",
   ],
   moreHref: "#about-full",
   polaroid: "",
