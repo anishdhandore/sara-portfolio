@@ -6,6 +6,8 @@ type PolaroidProps = {
   rotate?: number;
   /** A strip of washi tape across the top edge. */
   tape?: boolean;
+  /** Ratio of the print itself — landscape shots need their own. */
+  aspect?: string;
   className?: string;
   sizes?: string;
 };
@@ -22,6 +24,7 @@ export function Polaroid({
   alt,
   rotate = -3,
   tape = true,
+  aspect = "4/5",
   className = "",
   sizes = "(max-width: 768px) 60vw, 22vw",
 }: PolaroidProps) {
@@ -36,7 +39,13 @@ export function Polaroid({
           className="absolute -top-3 left-1/2 h-6 w-20 -translate-x-1/2 -rotate-3 bg-gold/35 mix-blend-multiply"
         />
       ) : null}
-      <Frame src={src} alt={alt} sizes={sizes} className="aspect-[4/5] w-full" />
+      <Frame
+        src={src}
+        alt={alt}
+        sizes={sizes}
+        className="w-full"
+        style={{ aspectRatio: aspect }}
+      />
     </figure>
   );
 }

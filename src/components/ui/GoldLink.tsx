@@ -2,7 +2,10 @@ import Link from "next/link";
 
 type GoldLinkProps = {
   children: React.ReactNode;
-  href: string;
+  /** Destination. Omit when the action is handled by `onClick` instead. */
+  href?: string;
+  /** Renders the call to action as a button — for in-page actions. */
+  onClick?: () => void;
   /**
    * Set on the blush sections. The bright gold only clears contrast against
    * the dark surfaces; on light ones it drops to ~1.5:1, so the deeper bronze
@@ -17,11 +20,14 @@ type GoldLinkProps = {
  *
  * The underline is a pseudo-element so it can animate on transform alone,
  * and the arrow nudges on hover. An empty href means the destination isn't
- * wired up yet, so it renders as inert rather than a dead link.
+ * wired up yet, so it renders as inert rather than a dead link. Off-site
+ * destinations (YouTube, Vimeo) open in a new tab so the portfolio isn't
+ * left behind.
  */
 export function GoldLink({
   children,
   href,
+  onClick,
   onLight = false,
   className = "",
 }: GoldLinkProps) {
@@ -51,6 +57,14 @@ export function GoldLink({
 
   const shared = `group relative inline-flex items-center gap-2 pb-1 ${tone} ${className}`;
 
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={shared}>
+        {inner}
+      </button>
+    );
+  }
+
   if (!href) {
     return (
       <span className={`${shared} cursor-default opacity-60`} aria-disabled>
@@ -59,9 +73,18 @@ export function GoldLink({
     );
   }
 
+  const isExternal = href.startsWith("http");
+
   return (
-    <Link href={href} className={shared}>
+    <Link
+      href={href}
+      className={shared}
+      {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
       {inner}
+      {isExternal ? (
+        <span className="sr-only"> (opens in a new tab)</span>
+      ) : null}
     </Link>
   );
 }

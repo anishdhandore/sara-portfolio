@@ -8,20 +8,20 @@ import { about } from "@/content/site";
 /**
  * Section 06 — about.
  *
- * Laid out like a scrapbook spread: a marginal column of handwriting and a
- * tilted print, the prose in the middle, and a second photograph taped on at
- * the far edge. The section clips its own overflow so the rotations never
- * push a horizontal scrollbar onto the page.
+ * Laid out like a scrapbook spread: a margin column carrying the label, the
+ * handwriting and a single tilted print, with the prose set beside it. The
+ * section clips its own overflow so the rotations never push a horizontal
+ * scrollbar onto the page.
  */
 export function AboutMe() {
   return (
     <section
       id="about"
       aria-labelledby="about-label"
-      className="relative w-full overflow-hidden bg-blush py-[var(--space-section)] px-[var(--space-gutter)]"
+      className="relative w-full overflow-hidden bg-blush px-[var(--space-gutter)] py-[var(--space-section)]"
     >
-      <div className="grid grid-cols-1 items-start gap-[var(--space-gutter)] gap-y-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.7fr)_minmax(0,0.85fr)]">
-        {/* Column 1 — the margin: label, handwriting, a tilted print. */}
+      <div className="grid grid-cols-1 items-start gap-[var(--space-gutter)] gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-x-[clamp(2rem,5vw,5rem)]">
+        {/* Column 1 — the margin: label, handwriting, the print. */}
         <div className="relative">
           <SectionLabel
             index="06"
@@ -36,12 +36,18 @@ export function AboutMe() {
             className="mt-6 text-2xl"
           />
 
-          <div className="relative z-10 mt-6 w-52 max-w-full lg:translate-x-10">
+          <div className="relative z-10 mt-14 w-full max-w-[22rem] lg:mt-16">
             <Polaroid
-              src={about.polaroid}
-              alt={about.polaroidAlt}
+              src={about.photo}
+              alt={about.photoAlt}
+              aspect="4/3"
               rotate={-4}
-              sizes="(max-width: 1024px) 60vw, 13rem"
+              sizes="(max-width: 1024px) 80vw, 22rem"
+            />
+
+            <Doodle
+              kind="star"
+              className="pointer-events-none absolute -right-4 -top-5 w-7 rotate-12"
             />
           </div>
         </div>
@@ -62,21 +68,6 @@ export function AboutMe() {
               Learn more
             </GoldLink>
           </div>
-        </div>
-
-        {/* Column 3 — a second print, taped down and starred. */}
-        <div className="relative w-52 max-w-full lg:ml-auto">
-          <Polaroid
-            src={about.taped}
-            alt={about.tapedAlt}
-            rotate={3}
-            sizes="(max-width: 1024px) 60vw, 13rem"
-          />
-
-          <Doodle
-            kind="star"
-            className="pointer-events-none absolute -right-3 -top-4 w-7 rotate-12"
-          />
         </div>
       </div>
     </section>

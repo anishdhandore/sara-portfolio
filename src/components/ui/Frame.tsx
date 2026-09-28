@@ -8,6 +8,8 @@ type FrameProps = {
   /** Responsive sizes hint for next/image. */
   sizes?: string;
   priority?: boolean;
+  /** Escape hatch for ratios that can't be expressed as a utility class. */
+  style?: React.CSSProperties;
 };
 
 /**
@@ -24,6 +26,7 @@ export function Frame({
   className = "",
   sizes = "(max-width: 768px) 100vw, 50vw",
   priority = false,
+  style,
 }: FrameProps) {
   if (!src) {
     return (
@@ -31,6 +34,7 @@ export function Frame({
         role="img"
         aria-label={`Placeholder: ${alt}`}
         className={`relative overflow-hidden bg-[linear-gradient(135deg,#3a2420_0%,#5c3730_45%,#2a1a17_100%)] ${className}`}
+        style={style}
       >
         <span
           aria-hidden
@@ -43,7 +47,7 @@ export function Frame({
   }
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={`relative overflow-hidden ${className}`} style={style}>
       <Image
         src={src}
         alt={alt}

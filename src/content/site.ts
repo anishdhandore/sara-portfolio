@@ -27,12 +27,12 @@ export type Photo = {
 };
 
 export const nav: readonly NavItem[] = [
-  { label: "Home", href: "#home" },
-  { label: "Films", href: "#films" },
-  { label: "Writing", href: "#writing" },
-  { label: "Photography", href: "#photography" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "Films", href: "/#films" },
+  { label: "Writing", href: "/#writing" },
+  { label: "Photography", href: "/#photography" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const site = {
@@ -50,6 +50,9 @@ export const hero = {
   note: "same world,\ndifferent eyes.",
   image: "",
   imageAlt: "Sara looking up at a city skyline at dusk",
+  /** Vertical showreel looping beside the headline. */
+  reel: "/video/showreel.mp4",
+  reelAlt: "Showreel — a cut of Sara's recent film work",
 } as const;
 
 /** Section 01 — the featured short film. */
@@ -59,7 +62,7 @@ export const shortFilm: Film = {
   genre: "Psychological Thriller",
   synopsis:
     "A story about perception, control and what's real. When Jay's world begins to unravel, he's left between truth and delusion.",
-  href: "",
+  href: "https://youtu.be/CAUlh3PpyEg",
   poster: "",
   posterAlt: "A figure silhouetted against a lamplit room",
 };
@@ -70,25 +73,25 @@ export const experimental: readonly Film[] = [
     title: "Domus",
     runtime: "2:34",
     genre: "No Dialogue",
-    href: "",
-    poster: "",
-    posterAlt: "A parked car on a street at night",
+    href: "https://www.youtube.com/watch?v=VkS0chDbq6M",
+    poster: "/images/domus.jpg",
+    posterAlt: "A woman turning to the camera in a bright living room, another figure filming on a phone behind her",
   },
   {
     title: "Who's Watching?",
     runtime: "1:41",
     genre: "Concept Video",
-    href: "",
-    poster: "",
-    posterAlt: "A dark, textured interior",
+    href: "https://www.youtube.com/watch?v=RL8hQUbF1zc",
+    poster: "/images/whos-watching.jpg",
+    posterAlt: "A woman at a desk lit by a laptop screen, looking past it",
   },
 ] as const;
 
 /** Section 03 — writing. */
 export const writing = {
   links: [
-    { label: "Scripts", href: "#scripts" },
-    { label: "Blogs", href: "#blogs" },
+    { label: "Scripts", href: "/writing#scripts" },
+    { label: "Blogs", href: "/writing#blogs" },
   ],
   image: "",
   imageAlt: "A notebook and pen in warm light through blinds",
@@ -98,11 +101,47 @@ export const writing = {
 export const photography = {
   lead: "A photo essay",
   leadHref: "#photo-essay",
-  moreHref: "#more-photography",
   images: [
-    { src: "", alt: "Sunset over open water" },
-    { src: "", alt: "A warm interior at golden hour" },
-    { src: "", alt: "Plants against a bright window" },
+    {
+      src: "/images/photography/photo-01.jpg",
+      alt: "A road at night beneath bridge lights, in black and white",
+    },
+    {
+      src: "/images/photography/photo-02.jpg",
+      alt: "Sunset over the sea, orange cloud breaking across a blue sky",
+    },
+    {
+      src: "/images/photography/photo-03.jpg",
+      alt: "Prayer flags strung over a mountain bazaar at sunset, a cup of coffee on the table in the foreground",
+    },
+    {
+      src: "/images/photography/photo-04.jpg",
+      alt: "Dawn over the sea from a high balcony, towers along the shoreline",
+    },
+    {
+      src: "/images/photography/photo-05.jpg",
+      alt: "Sara looking up in sunglasses against a bank of grey cloud",
+    },
+    {
+      src: "/images/photography/photo-06.jpg",
+      alt: "Shikaras moored at dusk on Dal Lake, shopfront lights reflected on the water",
+    },
+    {
+      src: "/images/photography/photo-07.jpg",
+      alt: "A cairn of balanced stones above a mountain stream",
+    },
+    {
+      src: "/images/photography/photo-08.jpg",
+      alt: "The sun setting behind a city skyline across the water",
+    },
+    {
+      src: "/images/photography/photo-09.jpg",
+      alt: "Snow on the peaks above a pine forest and a fast-running river",
+    },
+    {
+      src: "/images/photography/photo-10.jpg",
+      alt: "Carved stone ruins standing under a bright blue sky",
+    },
   ] as readonly Photo[],
 } as const;
 
@@ -129,10 +168,8 @@ export const about = {
     "My interest in filmmaking has grown through experimenting with short films, scripts, photography, theatre, and visual storytelling. This portfolio is a collection of that process — the stories I've created, the ideas I've explored, and the things I'm still learning as I find my voice as a filmmaker.",
   ],
   moreHref: "#about-full",
-  polaroid: "",
-  polaroidAlt: "Sara photographed from behind, looking out over the city",
-  taped: "",
-  tapedAlt: "Warm light falling through a window",
+  photo: "/images/about-sara.jpg",
+  photoAlt: "Sara laughing, a red rose held in her teeth",
 } as const;
 
 export const contact = {
