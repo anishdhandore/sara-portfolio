@@ -13,7 +13,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-rule-dark)] bg-ink">
       <div className="flex h-18 items-center justify-between px-[var(--space-gutter)]">
-        <Link href="#home" className="relative inline-block pb-2 leading-none">
+        <Link href="/#home" className="relative inline-block pb-2 leading-none">
           <span className="font-script text-[1.5rem] text-gold">Sara Dhandore</span>
           <Doodle
             kind="underline"

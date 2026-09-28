@@ -49,6 +49,10 @@
   --space-section: clamp(3rem, 2rem + 4vw, 6rem);
   --space-gutter: clamp(1.25rem, 0.8rem + 2vw, 3rem);
 
+  /* Screenplays are set in Courier by convention — system faces only, so
+     the reading pages cost no extra webfont. */
+  --font-typewriter: ui-monospace, "Courier New", Courier, monospace;
+
   /* Motion */
   --duration-fast: 160ms;
   --duration-normal: 320ms;
@@ -74,6 +78,7 @@
   --font-display: var(--font-playfair);
   --font-sans: var(--font-inter);
   --font-script: var(--font-dancing);
+  --font-mono: var(--font-typewriter);
 }
 
 /* ---------------------------------------------------------------
@@ -126,6 +131,13 @@ body {
   font-family: var(--font-display), ui-serif, Georgia, serif;
   font-weight: 400;
   line-height: 1.05;
+}
+
+/* The script pages: Courier, and the indents the form expects. */
+.u-screenplay {
+  font-family: var(--font-typewriter);
+  font-size: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
+  line-height: 1.7;
 }
 
 @media (prefers-reduced-motion: reduce) {
