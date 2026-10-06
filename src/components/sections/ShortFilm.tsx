@@ -1,3 +1,6 @@
+import { MaskedLines } from "@/components/motion/MaskedLines";
+import { Reveal } from "@/components/motion/Reveal";
+import { Wipe } from "@/components/motion/Wipe";
 import { Doodle } from "@/components/ui/Doodle";
 import { Frame } from "@/components/ui/Frame";
 import { GoldLink } from "@/components/ui/GoldLink";
@@ -22,46 +25,54 @@ export function ShortFilm() {
       }`}
     >
       <div className="flex flex-col justify-center p-[var(--space-gutter)] py-[calc(var(--space-gutter)*1.5)]">
-        <SectionLabel index="01" label="Short film" />
+        <Reveal>
+          <SectionLabel index="01" label="Short film" />
+        </Reveal>
 
         <h3
           id="short-film-title"
-          className="u-display mt-5 text-[length:var(--text-title)] italic text-cream"
+          className="u-display mt-5 text-[length:var(--text-title)] text-cream italic"
         >
-          {shortFilm.title}
+          <MaskedLines lines={[shortFilm.title]} delay={0.08} />
         </h3>
 
-        <p className="mt-3 text-[0.6875rem] tracking-[0.1em] text-cream/65">
-          <span>{shortFilm.runtime}</span>
-          <span aria-hidden className="mx-2 text-gold">
-            /
-          </span>
-          <span>{shortFilm.genre}</span>
-        </p>
+        <Reveal index={1} as="div" className="mt-3">
+          <p className="text-[0.6875rem] tracking-[0.1em] text-cream/65">
+            <span>{shortFilm.runtime}</span>
+            <span aria-hidden className="mx-2 text-gold">
+              /
+            </span>
+            <span>{shortFilm.genre}</span>
+          </p>
+        </Reveal>
 
         {shortFilm.synopsis ? (
-          <p className="mt-4 max-w-[32ch] text-[length:var(--text-body)] text-cream/70">
-            {shortFilm.synopsis}
-          </p>
+          <Reveal index={2}>
+            <p className="mt-4 max-w-[32ch] text-[length:var(--text-body)] text-cream/70">
+              {shortFilm.synopsis}
+            </p>
+          </Reveal>
         ) : null}
 
-        <div className="mt-6">
+        <Reveal index={3} className="mt-6">
           <GoldLink href={shortFilm.href}>Watch</GoldLink>
-        </div>
+        </Reveal>
 
         {/* Hand-drawn accent, tucked under the call to action. */}
-        <Doodle kind="squiggle" className="mt-7 w-16 -rotate-6" />
+        <Reveal index={4}>
+          <Doodle kind="squiggle" className="mt-7 w-16 -rotate-6" />
+        </Reveal>
       </div>
 
       {shortFilm.poster ? (
-        <div className="relative aspect-[4/5] w-full overflow-hidden md:aspect-auto md:h-full">
+        <Wipe className="relative aspect-[4/5] w-full overflow-hidden md:aspect-auto md:h-full">
           <Frame
             src={shortFilm.poster}
             alt={shortFilm.posterAlt}
             sizes="(max-width:768px) 100vw, 30vw"
             className="h-full min-h-[16rem] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
           />
-        </div>
+        </Wipe>
       ) : null}
     </section>
   );

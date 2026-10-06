@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef } from "react";
+
+import { DURATION, EASE_OUT_EXPO, transition } from "@/lib/motion";
 
 import type { Photo } from "@/content/site";
 
@@ -100,9 +103,7 @@ export function Lightbox({
     };
   }, [isOpen]);
 
-  if (index === null) return null;
-
-  const photo = photos[index];
+  const photo = index === null ? null : photos[index];
 
   const onTouchEnd = (event: React.TouchEvent) => {
     const start = touchStartX.current;
@@ -121,73 +122,95 @@ export function Lightbox({
   };
 
   return (
-    <div
-      ref={dialogRef}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Photograph ${index + 1} of ${total}: ${photo.alt}`}
-      className="fixed inset-0 z-50 flex flex-col bg-ink/97 backdrop-blur-sm"
-      onTouchStart={(event) => {
-        touchStartX.current = event.touches[0].clientX;
-      }}
-      onTouchEnd={onTouchEnd}
-    >
-      {/* Top bar — counter and close. */}
-      <div className="flex shrink-0 items-center justify-between px-[var(--space-gutter)] py-4">
-        <p className="u-eyebrow text-cream/55">
-          <span className="text-gold">{index + 1}</span>
-          <span aria-hidden className="mx-1.5">
-            /
-          </span>
-          {total}
-        </p>
-
-        <button
-          ref={closeRef}
-          type="button"
-          onClick={onClose}
-          aria-label="Close viewer"
-          className="grid size-9 place-items-center rounded-full border border-cream/20 text-cream/75 transition-colors duration-[var(--duration-fast)] hover:border-gold hover:text-gold"
+    <AnimatePresence>
+      {photo !== null && index !== null ? (
+        <motion.div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Photograph ${index + 1} of ${total}: ${photo.alt}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={transition(DURATION.normal)}
+          className="fixed inset-0 z-50 flex flex-col bg-ink/97 backdrop-blur-sm"
+          onTouchStart={(event) => {
+            touchStartX.current = event.touches[0].clientX;
+          }}
+          onTouchEnd={onTouchEnd}
         >
-          <svg viewBox="0 0 16 16" aria-hidden className="size-4">
-            <path
-              d="M3.5 3.5l9 9m0-9l-9 9"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              fill="none"
+          {/* Top bar — counter and close. */}
+          <div className="flex shrink-0 items-center justify-between px-[var(--space-gutter)] py-4">
+            <p className="u-eyebrow text-cream/55">
+              <span className="text-gold">{index + 1}</span>
+              <span aria-hidden className="mx-1.5">
+                /
+              </span>
+              {total}
+            </p>
+
+            <button
+              ref={closeRef}
+              type="button"
+              onClick={onClose}
+              aria-label="Close viewer"
+              className="grid size-9 place-items-center rounded-full border border-cream/20 text-cream/75 transition-colors duration-[var(--duration-fast)] hover:border-gold hover:text-gold"
+            >
+              <svg viewBox="0 0 16 16" aria-hidden className="size-4">
+                <path
+                  d="M3.5 3.5l9 9m0-9l-9 9"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  fill="none"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* The photograph, cross-dissolving as you move through the set. */}
+          <div className="relative min-h-0 flex-1 px-[var(--space-gutter)]">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.div
+                key={photo.src}
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.99 }}
+                transition={{ duration: DURATION.slow, ease: EASE_OUT_EXPO }}
+                className="absolute inset-0 px-[var(--space-gutter)]"
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  sizes="100vw"
+                  priority
+                  className="object-contain"
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Caption and paddles. */}
+          <div className="flex shrink-0 items-center justify-between gap-4 px-[var(--space-gutter)] py-5">
+            <Paddle
+              onClick={goPrevious}
+              label="Previous photograph"
+              direction="left"
             />
-          </svg>
-        </button>
-      </div>
 
-      {/* The photograph. */}
-      <div className="relative min-h-0 flex-1 px-[var(--space-gutter)]">
-        <Image
-          key={photo.src}
-          src={photo.src}
-          alt={photo.alt}
-          fill
-          sizes="100vw"
-          priority
-          className="object-contain"
-        />
-      </div>
+            <p className="max-w-[46ch] text-center text-[0.8125rem] text-cream/60">
+              {photo.alt}
+            </p>
 
-      {/* Caption and paddles. */}
-      <div className="flex shrink-0 items-center justify-between gap-4 px-[var(--space-gutter)] py-5">
-        <Paddle
-          onClick={goPrevious}
-          label="Previous photograph"
-          direction="left"
-        />
-
-        <p className="max-w-[46ch] text-center text-[0.8125rem] text-cream/60">
-          {photo.alt}
-        </p>
-
-        <Paddle onClick={goNext} label="Next photograph" direction="right" />
-      </div>
-    </div>
+            <Paddle
+              onClick={goNext}
+              label="Next photograph"
+              direction="right"
+            />
+          </div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 

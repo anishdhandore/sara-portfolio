@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
+import { MotionProvider } from "@/components/motion/MotionProvider";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import "./globals.css";
 
 /*
@@ -67,8 +70,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${playfair.variable} ${inter.variable} ${dancing.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-ink text-cream">
-        {children}
+      <body className="flex min-h-full flex-col bg-ink text-cream">
+        <MotionProvider>
+          <ScrollProgress />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   );

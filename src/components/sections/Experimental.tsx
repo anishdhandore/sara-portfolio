@@ -1,3 +1,5 @@
+import { Reveal } from "@/components/motion/Reveal";
+import { Wipe } from "@/components/motion/Wipe";
 import { Doodle } from "@/components/ui/Doodle";
 import { Frame } from "@/components/ui/Frame";
 import { GoldLink } from "@/components/ui/GoldLink";
@@ -17,45 +19,50 @@ export function Experimental() {
       aria-labelledby="experimental-label"
       className="relative flex h-full flex-col overflow-hidden bg-blush p-[var(--space-gutter)] py-[calc(var(--space-gutter)*1.5)]"
     >
-      <SectionLabel
-        index="02"
-        label="Experimental work"
-        labelId="experimental-label"
-        onLight
-        className="relative z-10"
-      />
+      <Reveal className="relative z-10">
+        <SectionLabel
+          index="02"
+          label="Experimental work"
+          labelId="experimental-label"
+          onLight
+        />
+      </Reveal>
 
       <ul className="mt-8 grid grid-cols-1 gap-[var(--space-gutter)] sm:grid-cols-2">
-        {experimental.map((film) => (
+        {experimental.map((film, i) => (
           <li key={film.title} className="group flex flex-col">
-            <h3 className="u-display text-xl italic text-cocoa">
-              {film.title}
-            </h3>
+            <Reveal index={i}>
+              <h3 className="u-display text-xl text-cocoa italic">
+                {film.title}
+              </h3>
+            </Reveal>
 
-            <p className="mt-2 text-[0.6875rem] tracking-[0.1em] text-cocoa-muted">
-              <span>{film.runtime}</span>
-              <span aria-hidden className="mx-2 text-gold-deep">
-                /
-              </span>
-              <span>{film.genre}</span>
-            </p>
+            <Reveal index={i} delay={0.06} as="div" className="mt-2">
+              <p className="text-[0.6875rem] tracking-[0.1em] text-cocoa-muted">
+                <span>{film.runtime}</span>
+                <span aria-hidden className="mx-2 text-gold-deep">
+                  /
+                </span>
+                <span>{film.genre}</span>
+              </p>
+            </Reveal>
 
             {film.poster ? (
-              <div className="mt-3 overflow-hidden">
+              <Wipe index={i} delay={0.08} className="mt-3 overflow-hidden">
                 <Frame
                   src={film.poster}
                   alt={film.posterAlt}
                   sizes="(max-width:768px) 45vw, 20vw"
                   className="aspect-[16/10] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
                 />
-              </div>
+              </Wipe>
             ) : null}
 
-            <div className="mt-4">
+            <Reveal index={i} delay={0.14} className="mt-4">
               <GoldLink href={film.href} onLight>
                 Watch
               </GoldLink>
-            </div>
+            </Reveal>
           </li>
         ))}
       </ul>

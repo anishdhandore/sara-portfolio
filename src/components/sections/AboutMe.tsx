@@ -1,3 +1,5 @@
+import { Reveal } from "@/components/motion/Reveal";
+import { TapedPrint } from "@/components/motion/TapedPrint";
 import { Doodle } from "@/components/ui/Doodle";
 import { GoldLink } from "@/components/ui/GoldLink";
 import { Polaroid } from "@/components/ui/Polaroid";
@@ -38,7 +40,7 @@ export function AboutMe() {
 
           {/* The star is pinned to the print, so it goes with it. */}
           {about.photo ? (
-            <div className="relative z-10 mt-14 w-full max-w-[22rem] lg:mt-16">
+            <TapedPrint className="relative z-10 mt-14 w-full max-w-[22rem] lg:mt-16">
               <Polaroid
                 src={about.photo}
                 alt={about.photoAlt}
@@ -51,26 +53,25 @@ export function AboutMe() {
                 kind="star"
                 className="pointer-events-none absolute -top-5 -right-4 w-7 rotate-12"
               />
-            </div>
+            </TapedPrint>
           ) : null}
         </div>
 
         {/* Column 2 — the prose. */}
         <div className="lg:pt-2">
-          {about.paragraphs.map((paragraph) => (
-            <p
-              key={paragraph}
-              className="max-w-[46ch] text-cocoa-muted [&+p]:mt-5"
-            >
-              {paragraph}
-            </p>
+          {about.paragraphs.map((paragraph, i) => (
+            <Reveal key={paragraph} index={i}>
+              <p className="max-w-[46ch] text-cocoa-muted [&:not(:first-child)]:mt-5">
+                {paragraph}
+              </p>
+            </Reveal>
           ))}
 
-          <div className="mt-8">
+          <Reveal className="mt-8" delay={0.1}>
             <GoldLink href={about.moreHref} onLight>
               Learn more
             </GoldLink>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

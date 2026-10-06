@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { Parallax } from "@/components/motion/Parallax";
+import { Reveal } from "@/components/motion/Reveal";
+import { Wipe } from "@/components/motion/Wipe";
 import { Frame } from "@/components/ui/Frame";
 import { GoldLink } from "@/components/ui/GoldLink";
 import { Lightbox } from "@/components/ui/Lightbox";
@@ -32,60 +35,68 @@ export function Photography() {
     >
       {/* Caption rail. */}
       <div className="md:flex md:w-[19%] md:shrink-0 md:flex-col md:justify-center">
-        <SectionLabel
-          index="04"
-          label="Photography"
-          labelId="photography-label"
-        />
+        <Reveal>
+          <SectionLabel
+            index="04"
+            label="Photography"
+            labelId="photography-label"
+          />
+        </Reveal>
 
-        <Link
-          href={photography.leadHref}
-          className="group mt-3 inline-flex w-fit items-center gap-1.5 text-[0.8125rem] text-cream/80"
-        >
-          {photography.lead}
-          <span
-            aria-hidden
-            className="inline-block text-gold transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:translate-x-1"
+        <Reveal index={1} as="div" className="mt-3">
+          <Link
+            href={photography.leadHref}
+            className="group inline-flex w-fit items-center gap-1.5 text-[0.8125rem] text-cream/80"
           >
-            →
-          </span>
-        </Link>
+            {photography.lead}
+            <span
+              aria-hidden
+              className="inline-block text-gold transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </Link>
+        </Reveal>
 
-        <div className="mt-6 hidden md:block">
+        <Reveal index={2} className="mt-6 hidden md:block">
           <GoldLink onClick={() => setOpenIndex(0)}>More photography</GoldLink>
-        </div>
+        </Reveal>
       </div>
 
       <div className="mt-6 flex flex-1 flex-col gap-6 md:mt-0">
         <ul className="grid grid-cols-3 gap-2 sm:gap-3">
           {sheet.map((img, i) => (
             <li key={img.src}>
-              <button
-                type="button"
-                onClick={() => setOpenIndex(i)}
-                aria-label={`Open photograph: ${img.alt}`}
-                className="group relative block w-full overflow-hidden bg-ink-soft"
-              >
-                <Frame
-                  src={img.src}
-                  alt={img.alt}
-                  sizes="(max-width:768px) 30vw, 25vw"
-                  className="aspect-[3/4] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
-                />
+              <Parallax distance={i === 1 ? 26 : -14}>
+                <Wipe index={i}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(i)}
+                    aria-label={`Open photograph: ${img.alt}`}
+                    className="group relative block w-full overflow-hidden bg-ink-soft"
+                  >
+                    <Frame
+                      src={img.src}
+                      alt={img.alt}
+                      sizes="(max-width:768px) 30vw, 25vw"
+                      className="aspect-[3/4] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+                    />
 
-                {/* Lifts to full colour as you reach for it. */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 bg-ink/15 transition-opacity duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:opacity-0 group-focus-visible:opacity-0"
-                />
-              </button>
+                    {/* Lifts to full colour as you reach for it. */}
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 bg-ink/15 transition-opacity duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:opacity-0 group-focus-visible:opacity-0"
+                    />
+                  </button>
+                </Wipe>
+              </Parallax>
             </li>
           ))}
         </ul>
 
-        <div className="md:hidden">
+        <Reveal className="md:hidden">
           <GoldLink onClick={() => setOpenIndex(0)}>More photography</GoldLink>
-        </div>
+        </Reveal>
       </div>
 
       <Lightbox

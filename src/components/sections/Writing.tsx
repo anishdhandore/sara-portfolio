@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/motion/Reveal";
 import { Doodle } from "@/components/ui/Doodle";
 import { GoldLink } from "@/components/ui/GoldLink";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -25,9 +26,9 @@ export function Writing() {
         className="absolute top-1/2 left-0 h-20 w-8 -translate-y-1/2"
       />
 
-      <div className="relative pl-3 md:w-[19%] md:shrink-0 md:pl-2">
+      <Reveal className="relative pl-3 md:w-[19%] md:shrink-0 md:pl-2">
         <SectionLabel index="03" label="Writing" labelId="writing-label" />
-      </div>
+      </Reveal>
 
       <div className="mt-8 grid flex-1 grid-cols-1 gap-x-[clamp(2rem,5vw,4rem)] gap-y-10 sm:grid-cols-2 md:mt-0">
         <WritingColumn
@@ -63,11 +64,13 @@ type WritingColumnProps = {
 function WritingColumn({ heading, href, items }: WritingColumnProps) {
   return (
     <div>
-      <h3 className="u-eyebrow text-gold">{heading}</h3>
+      <Reveal>
+        <h3 className="u-eyebrow text-gold">{heading}</h3>
+      </Reveal>
 
       <ul className="mt-5 divide-y divide-[var(--color-rule-dark)] border-t border-[var(--color-rule-dark)]">
-        {items.map((item) => (
-          <li key={item.slug}>
+        {items.map((item, i) => (
+          <Reveal as="li" key={item.slug} index={i} delay={0.05}>
             <Link
               href={`/writing/${item.slug}`}
               className="group block py-4 focus-visible:outline-offset-4"
@@ -88,13 +91,13 @@ function WritingColumn({ heading, href, items }: WritingColumnProps) {
                 {item.meta}
               </span>
             </Link>
-          </li>
+          </Reveal>
         ))}
       </ul>
 
-      <div className="mt-5">
+      <Reveal className="mt-5" delay={0.2}>
         <GoldLink href={href}>All {heading.toLowerCase()}</GoldLink>
-      </div>
+      </Reveal>
     </div>
   );
 }

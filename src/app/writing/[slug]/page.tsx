@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { MaskedLines } from "@/components/motion/MaskedLines";
+import { Reveal } from "@/components/motion/Reveal";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { Essay } from "@/components/writing/Essay";
@@ -74,10 +76,12 @@ export default async function WritingPage({
             ) : null}
 
             <h1 className="u-display mt-3 text-[length:clamp(2rem,1.4rem+2.6vw,3.25rem)] text-cocoa italic">
-              {title}
+              <MaskedLines lines={[title]} delay={0.08} />
             </h1>
 
-            <p className="mt-4 max-w-[52ch] text-cocoa-muted">{standfirst}</p>
+            <Reveal delay={0.3}>
+              <p className="max-w-[52ch] text-cocoa-muted mt-4">{standfirst}</p>
+            </Reveal>
 
             <p className="u-eyebrow mt-6 text-cocoa-muted">
               Written by <span className="text-cocoa">Sara Dhandore</span>
@@ -86,13 +90,13 @@ export default async function WritingPage({
             <Doodle kind="underline" className="mt-4 w-20" />
           </header>
 
-          <div className="mt-12">
+          <Reveal className="mt-12" delay={0.1}>
             {isScript ? (
               <Screenplay source={found.script.source} />
             ) : (
               <Essay paragraphs={found.blog.paragraphs} />
             )}
-          </div>
+          </Reveal>
         </article>
       </main>
 
