@@ -17,7 +17,9 @@ export function ShortFilm() {
     <section
       id="films"
       aria-labelledby="short-film-title"
-      className="group grid h-full grid-cols-1 bg-wine md:grid-cols-2"
+      className={`group grid h-full grid-cols-1 bg-wine ${
+        shortFilm.poster ? "md:grid-cols-2" : ""
+      }`}
     >
       <div className="flex flex-col justify-center p-[var(--space-gutter)] py-[calc(var(--space-gutter)*1.5)]">
         <SectionLabel index="01" label="Short film" />
@@ -51,14 +53,16 @@ export function ShortFilm() {
         <Doodle kind="squiggle" className="mt-7 w-16 -rotate-6" />
       </div>
 
-      <div className="relative aspect-[4/5] w-full overflow-hidden md:aspect-auto md:h-full">
-        <Frame
-          src={shortFilm.poster}
-          alt={shortFilm.posterAlt}
-          sizes="(max-width:768px) 100vw, 30vw"
-          className="h-full min-h-[16rem] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
-        />
-      </div>
+      {shortFilm.poster ? (
+        <div className="relative aspect-[4/5] w-full overflow-hidden md:aspect-auto md:h-full">
+          <Frame
+            src={shortFilm.poster}
+            alt={shortFilm.posterAlt}
+            sizes="(max-width:768px) 100vw, 30vw"
+            className="h-full min-h-[16rem] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
+          />
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -15,9 +15,10 @@ const SHEET_COUNT = 3;
 /**
  * Section 04 — photography.
  *
- * A contact sheet of three portrait stills, standing in for the full set.
- * Any of them — or the "More photography" link — opens the viewer, where the
- * whole run can be read one frame at a time at a size worth looking at.
+ * A full-width band: the caption rail on the left, three portrait stills
+ * standing in for the full set on the right. Any of them — or the "More
+ * photography" link — opens the viewer, where the whole run can be read one
+ * frame at a time at a size worth looking at.
  */
 export function Photography() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -27,29 +28,36 @@ export function Photography() {
     <section
       id="photography"
       aria-labelledby="photography-label"
-      className="flex h-full flex-col bg-ink p-[var(--space-gutter)]"
+      className="flex w-full flex-col bg-ink px-[var(--space-gutter)] py-[var(--space-section)] md:flex-row md:gap-[clamp(1.5rem,3.5vw,3.5rem)]"
     >
-      <SectionLabel
-        index="04"
-        label="Photography"
-        labelId="photography-label"
-      />
+      {/* Caption rail. */}
+      <div className="md:flex md:w-[19%] md:shrink-0 md:flex-col md:justify-center">
+        <SectionLabel
+          index="04"
+          label="Photography"
+          labelId="photography-label"
+        />
 
-      <Link
-        href={photography.leadHref}
-        className="group mt-2 inline-flex w-fit items-center gap-1.5 text-[0.8125rem] text-cream/80"
-      >
-        {photography.lead}
-        <span
-          aria-hidden
-          className="inline-block text-gold transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:translate-x-1"
+        <Link
+          href={photography.leadHref}
+          className="group mt-3 inline-flex w-fit items-center gap-1.5 text-[0.8125rem] text-cream/80"
         >
-          →
-        </span>
-      </Link>
+          {photography.lead}
+          <span
+            aria-hidden
+            className="inline-block text-gold transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </Link>
 
-      <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end">
-        <ul className="grid flex-1 grid-cols-3 gap-2">
+        <div className="mt-6 hidden md:block">
+          <GoldLink onClick={() => setOpenIndex(0)}>More photography</GoldLink>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-1 flex-col gap-6 md:mt-0">
+        <ul className="grid grid-cols-3 gap-2 sm:gap-3">
           {sheet.map((img, i) => (
             <li key={img.src}>
               <button
@@ -61,7 +69,7 @@ export function Photography() {
                 <Frame
                   src={img.src}
                   alt={img.alt}
-                  sizes="(max-width:768px) 30vw, 18vw"
+                  sizes="(max-width:768px) 30vw, 25vw"
                   className="aspect-[3/4] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
                 />
 
@@ -75,9 +83,9 @@ export function Photography() {
           ))}
         </ul>
 
-        <GoldLink onClick={() => setOpenIndex(0)} className="shrink-0">
-          More photography
-        </GoldLink>
+        <div className="md:hidden">
+          <GoldLink onClick={() => setOpenIndex(0)}>More photography</GoldLink>
+        </div>
       </div>
 
       <Lightbox

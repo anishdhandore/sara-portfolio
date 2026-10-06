@@ -6,7 +6,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { about } from "@/content/site";
 
 /**
- * Section 06 — about.
+ * Section 05 — about.
  *
  * Laid out like a scrapbook spread: a margin column carrying the label, the
  * handwriting and a single tilted print, with the prose set beside it. The
@@ -24,7 +24,7 @@ export function AboutMe() {
         {/* Column 1 — the margin: label, handwriting, the print. */}
         <div className="relative">
           <SectionLabel
-            index="06"
+            index="05"
             label="About me"
             labelId="about-label"
             onLight
@@ -36,20 +36,23 @@ export function AboutMe() {
             className="mt-6 text-2xl"
           />
 
-          <div className="relative z-10 mt-14 w-full max-w-[22rem] lg:mt-16">
-            <Polaroid
-              src={about.photo}
-              alt={about.photoAlt}
-              aspect="4/3"
-              rotate={-4}
-              sizes="(max-width: 1024px) 80vw, 22rem"
-            />
+          {/* The star is pinned to the print, so it goes with it. */}
+          {about.photo ? (
+            <div className="relative z-10 mt-14 w-full max-w-[22rem] lg:mt-16">
+              <Polaroid
+                src={about.photo}
+                alt={about.photoAlt}
+                aspect="4/3"
+                rotate={-4}
+                sizes="(max-width: 1024px) 80vw, 22rem"
+              />
 
-            <Doodle
-              kind="star"
-              className="pointer-events-none absolute -right-4 -top-5 w-7 rotate-12"
-            />
-          </div>
+              <Doodle
+                kind="star"
+                className="pointer-events-none absolute -top-5 -right-4 w-7 rotate-12"
+              />
+            </div>
+          ) : null}
         </div>
 
         {/* Column 2 — the prose. */}

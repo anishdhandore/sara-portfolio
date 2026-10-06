@@ -40,14 +40,16 @@ export function Experimental() {
               <span>{film.genre}</span>
             </p>
 
-            <div className="mt-3 overflow-hidden">
-              <Frame
-                src={film.poster}
-                alt={film.posterAlt}
-                sizes="(max-width:768px) 45vw, 20vw"
-                className="aspect-[16/10] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
-              />
-            </div>
+            {film.poster ? (
+              <div className="mt-3 overflow-hidden">
+                <Frame
+                  src={film.poster}
+                  alt={film.posterAlt}
+                  sizes="(max-width:768px) 45vw, 20vw"
+                  className="aspect-[16/10] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
+                />
+              </div>
+            ) : null}
 
             <div className="mt-4">
               <GoldLink href={film.href} onLight>

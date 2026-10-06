@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 type FrameProps = {
+  /** Empty while that piece of content is still being gathered. */
   src: string;
   alt: string;
   /** Extra classes for sizing / aspect ratio. */
@@ -13,12 +14,11 @@ type FrameProps = {
 };
 
 /**
- * An image slot that degrades gracefully.
+ * An image slot.
  *
- * Content is still being gathered, so `src` is often an empty string. Rather
- * than breaking the layout, an empty slot renders a warm placeholder at the
- * correct dimensions — the composition stays reviewable before the real
- * photographs land.
+ * An empty `src` renders nothing at all, rather than a stand-in: a section
+ * with no photograph should close up around the gap, not hold open a
+ * labelled rectangle. Callers decide what their layout does without it.
  */
 export function Frame({
   src,
@@ -28,23 +28,7 @@ export function Frame({
   priority = false,
   style,
 }: FrameProps) {
-  if (!src) {
-    return (
-      <div
-        role="img"
-        aria-label={`Placeholder: ${alt}`}
-        className={`relative overflow-hidden bg-[linear-gradient(135deg,#3a2420_0%,#5c3730_45%,#2a1a17_100%)] ${className}`}
-        style={style}
-      >
-        <span
-          aria-hidden
-          className="absolute inset-0 grid place-items-center px-3 text-center text-[0.5625rem] uppercase tracking-[0.2em] text-cream/35"
-        >
-          {alt}
-        </span>
-      </div>
-    );
-  }
+  if (!src) return null;
 
   return (
     <div className={`relative overflow-hidden ${className}`} style={style}>

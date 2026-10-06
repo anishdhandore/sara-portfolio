@@ -75,7 +75,8 @@ export const experimental: readonly Film[] = [
     genre: "No Dialogue",
     href: "https://www.youtube.com/watch?v=VkS0chDbq6M",
     poster: "/images/domus.jpg",
-    posterAlt: "A woman turning to the camera in a bright living room, another figure filming on a phone behind her",
+    posterAlt:
+      "A woman turning to the camera in a bright living room, another figure filming on a phone behind her",
   },
   {
     title: "Who's Watching?",
@@ -93,8 +94,6 @@ export const writing = {
     { label: "Scripts", href: "/writing#scripts" },
     { label: "Blogs", href: "/writing#blogs" },
   ],
-  image: "",
-  imageAlt: "A notebook and pen in warm light through blinds",
 } as const;
 
 /** Section 04 — photography. */
@@ -145,20 +144,7 @@ export const photography = {
   ] as readonly Photo[],
 } as const;
 
-/** Section 05 — moving image reel, shown as a filmstrip. */
-export const movingImage = {
-  body: "A collection of moments, frames and in-between.",
-  href: "#reel",
-  frames: [
-    { src: "", alt: "City lights at night" },
-    { src: "", alt: "A figure in a doorway" },
-    { src: "", alt: "Headlights on a wet road" },
-    { src: "", alt: "A window at dusk" },
-    { src: "", alt: "Empty street at night" },
-  ] as readonly Photo[],
-} as const;
-
-/** Section 06 — about. */
+/** Section 05 — about. */
 export const about = {
   note: "just a girl\nwith a camera\nand a lot\nof dreams",
   paragraphs: [

@@ -35,23 +35,27 @@ export function Hero() {
       aria-labelledby="hero-heading"
       className="relative isolate min-h-[clamp(30rem,78vh,46rem)] overflow-hidden"
     >
-      <Frame
-        src={hero.image}
-        alt={hero.imageAlt}
-        priority
-        sizes="100vw"
-        className="absolute inset-0"
-      />
-
-      {/* Scrim — keeps the left-hand copy legible over any frame. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(to_right,rgba(23,16,14,0.85)_0%,rgba(23,16,14,0.6)_35%,rgba(23,16,14,0)_65%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(to_top,rgba(23,16,14,0.75)_0%,rgba(23,16,14,0.15)_30%,rgba(23,16,14,0)_60%)]"
-      />
+      {/* The scrims exist to hold copy off a photograph, so they only
+          appear alongside one. Without it the hero sits on bare ink. */}
+      {hero.image ? (
+        <>
+          <Frame
+            src={hero.image}
+            alt={hero.imageAlt}
+            priority
+            sizes="100vw"
+            className="absolute inset-0"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(to_right,rgba(23,16,14,0.85)_0%,rgba(23,16,14,0.6)_35%,rgba(23,16,14,0)_65%)]"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(to_top,rgba(23,16,14,0.75)_0%,rgba(23,16,14,0.15)_30%,rgba(23,16,14,0)_60%)]"
+          />
+        </>
+      ) : null}
 
       <div className="relative z-10 flex min-h-[clamp(30rem,78vh,46rem)] items-center px-[var(--space-gutter)] py-[var(--space-section)]">
         <div className="mx-auto w-full max-w-6xl">
@@ -105,11 +109,11 @@ export function Hero() {
             {/* The reel, and the margin annotation that leans on it. */}
             <motion.div
               {...rise(2 + hero.titleLines.length)}
-              className="relative w-full max-w-[13rem] shrink-0 sm:max-w-[15rem] lg:w-[clamp(11rem,17vw,15rem)] lg:max-w-none"
+              className="relative w-full max-w-[16rem] shrink-0 sm:max-w-[19rem] lg:w-[clamp(15rem,23vw,21rem)] lg:max-w-none"
             >
               <Showreel src={hero.reel} label={hero.reelAlt} />
 
-              <div className="mt-6 lg:-ml-10">
+              <div className="mt-6 lg:absolute lg:bottom-6 lg:left-0 lg:mt-0 lg:w-48 lg:-translate-x-[88%]">
                 <ScriptNote
                   text={hero.note}
                   rotate={-14}

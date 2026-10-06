@@ -17,7 +17,8 @@ type PolaroidProps = {
  *
  * The About section reads like a physical scrapbook, so the prints get a
  * paper border, a drop shadow and a piece of tape rather than sitting flush
- * in the grid.
+ * in the grid. With no photograph there is no print: the paper, shadow and
+ * tape would otherwise hang in the layout around nothing.
  */
 export function Polaroid({
   src,
@@ -28,6 +29,8 @@ export function Polaroid({
   className = "",
   sizes = "(max-width: 768px) 60vw, 22vw",
 }: PolaroidProps) {
+  if (!src) return null;
+
   return (
     <figure
       className={`relative bg-[#faf6f2] p-2.5 pb-9 shadow-[0_18px_40px_-18px_rgba(30,12,10,0.55)] ${className}`}
