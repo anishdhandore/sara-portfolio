@@ -1,7 +1,60 @@
 import type { NextConfig } from "next";
 
+/**
+ * Content Security Policy.
+ *
+ * The site loads nothing from anywhere else — fonts, images, video and
+ * scripts are all served from this origin — so every fetching directive is
+ * locked to 'self'. YouTube and Instagram are only ever navigated to, which
+ * a policy does not govern, so they need no allowance here.
+ *
+ * `'unsafe-inline'` stays on scripts and styles because Next inlines its
+ * bootstrap and the flight payload, and Tailwind injects style tags. The
+ * alternative is a per-request nonce, which needs middleware and would make
+ * every page dynamic — a poor trade for a static site with no user input and
+ * no raw-HTML rendering anywhere in it. The policy still blocks loading
+ * script, frame or object content from any other origin.
+ */
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "media-src 'self'",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "frame-src 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+const securityHeaders = [
+  {
+    key: "Content-Security-Policy",
+    value: contentSecurityPolicy,
+  },
+  {
+    /* Two years, covering www as well. `preload` is deliberately left off —
+       it is a slow commitment to undo, so it should be a choice. */
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains",
+  },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  },
+];
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
 };
 
 export default nextConfig;
