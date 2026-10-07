@@ -74,9 +74,8 @@ export const experimental: readonly Film[] = [
     runtime: "2:34",
     genre: "No Dialogue",
     href: "https://www.youtube.com/watch?v=VkS0chDbq6M",
-    poster: "/images/domus.jpg",
-    posterAlt:
-      "A woman turning to the camera in a bright living room, another figure filming on a phone behind her",
+    poster: "/images/domus-rooftop.jpg",
+    posterAlt: "A figure on a rooftop at night, lit windows and plants behind",
   },
   {
     title: "Who's Watching?",

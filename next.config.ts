@@ -8,6 +8,10 @@ import type { NextConfig } from "next";
  * locked to 'self'. YouTube and Instagram are only ever navigated to, which
  * a policy does not govern, so they need no allowance here.
  *
+ * `'unsafe-eval'` is added in development only: React uses eval there to
+ * reconstruct callstacks and drive other debugging features, and never uses
+ * it in a production build. Production stays strict.
+ *
  * `'unsafe-inline'` stays on scripts and styles because Next inlines its
  * bootstrap and the flight payload, and Tailwind injects style tags. The
  * alternative is a per-request nonce, which needs middleware and would make
@@ -15,9 +19,11 @@ import type { NextConfig } from "next";
  * no raw-HTML rendering anywhere in it. The policy still blocks loading
  * script, frame or object content from any other origin.
  */
+const isDev = process.env.NODE_ENV === "development";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "media-src 'self'",
