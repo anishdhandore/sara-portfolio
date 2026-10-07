@@ -38,10 +38,14 @@ export function ShortFilm() {
 
         <Reveal index={1} as="div" className="mt-3">
           <p className="text-[0.6875rem] tracking-[0.1em] text-cream/65">
-            <span>{shortFilm.runtime}</span>
-            <span aria-hidden className="mx-2 text-gold">
-              /
-            </span>
+            {shortFilm.runtime ? (
+              <>
+                <span>{shortFilm.runtime}</span>
+                <span aria-hidden className="mx-2 text-gold">
+                  /
+                </span>
+              </>
+            ) : null}
             <span>{shortFilm.genre}</span>
           </p>
         </Reveal>

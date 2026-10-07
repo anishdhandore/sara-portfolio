@@ -11,7 +11,8 @@ export type NavItem = {
 
 export type Film = {
   title: string;
-  runtime: string;
+  /** Omitted where the length isn't worth stating. */
+  runtime?: string;
   genre: string;
   synopsis?: string;
   /** Watch link — YouTube / Vimeo. Empty string renders a disabled link. */
@@ -38,9 +39,9 @@ export const nav: readonly NavItem[] = [
 export const site = {
   name: "Sara Dhandore",
   role: "Filmmaker / Director",
-  email: "sara.dhandore@gmail.com",
-  instagram: "@sara.dhandore",
-  instagramUrl: "https://instagram.com/sara.dhandore",
+  email: "dhandoresara@gmail.com",
+  instagram: "@sara_wdymsiri",
+  instagramUrl: "https://instagram.com/sara_wdymsiri",
 } as const;
 
 export const hero = {
@@ -58,7 +59,6 @@ export const hero = {
 /** Section 01 — the featured short film. */
 export const shortFilm: Film = {
   title: "Everything",
-  runtime: "5–7 min",
   genre: "Psychological Thriller",
   synopsis:
     "A story about perception, control and what's real. When Jay's world begins to unravel, he's left between truth and delusion.",

@@ -39,10 +39,14 @@ export function Experimental() {
 
             <Reveal index={i} delay={0.06} as="div" className="mt-2">
               <p className="text-[0.6875rem] tracking-[0.1em] text-cocoa-muted">
-                <span>{film.runtime}</span>
-                <span aria-hidden className="mx-2 text-gold-deep">
-                  /
-                </span>
+                {film.runtime ? (
+                  <>
+                    <span>{film.runtime}</span>
+                    <span aria-hidden className="mx-2 text-gold-deep">
+                      /
+                    </span>
+                  </>
+                ) : null}
                 <span>{film.genre}</span>
               </p>
             </Reveal>
