@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "motion/react";
 
 type ShowreelProps = {
   src: string;
@@ -10,51 +9,85 @@ type ShowreelProps = {
   className?: string;
 };
 
+function formatSMPTE(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  const frames = Math.floor((seconds % 1) * 24);
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}:${String(frames).padStart(2, "0")}`;
+}
+
 /**
  * The showreel, playing in the margin of the hero.
- *
- * It behaves like a loop running on a monitor in the corner of an edit
- * suite: muted, continuous, no chrome until you reach for it. Sound and
- * playback are both reachable, and the loop pauses whenever it scrolls out
- * of view so it isn't burning battery below the fold.
+ * Upgraded with live SMPTE timecode (24 FPS), interactive scrubber, and theater controls.
  */
 export function Showreel({ src, label, className = "" }: ShowreelProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const prefersReducedMotion = useReducedMotion();
+  const scrubberRef = useRef<HTMLDivElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-  // Autoplay is applied here rather than via the attribute so the server and
-  // client render the same markup, and so reduced motion can opt out.
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || prefersReducedMotion) return;
+    if (!video) return;
 
-    // A blocked autoplay promise is not an error worth surfacing — the
-    // play control is already on screen.
-    void video.play().catch(() => undefined);
-  }, [prefersReducedMotion]);
+    // Explicitly configure attributes required by WebKit / iOS Safari for autoplay
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "true");
 
-  // Only run the loop while it's actually on screen.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || prefersReducedMotion) return;
+    const startPlayback = () => {
+      const p = video.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // If iOS Safari or browser power mode delays auto-play,
+          // resume immediately on the very first touch, click or scroll anywhere on page:
+          const onFirstInteraction = () => {
+            void video.play().catch(() => undefined);
+            window.removeEventListener("touchstart", onFirstInteraction);
+            window.removeEventListener("click", onFirstInteraction);
+            window.removeEventListener("scroll", onFirstInteraction);
+          };
+          window.addEventListener("touchstart", onFirstInteraction, { passive: true, once: true });
+          window.addEventListener("click", onFirstInteraction, { once: true });
+          window.addEventListener("scroll", onFirstInteraction, { passive: true, once: true });
+        });
+      }
+    };
 
+    startPlayback();
+
+    // Intersection Observer: only pause when scrolled completely away (never pause on initial entrance)
+    let isInitial = true;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          void video.play().catch(() => undefined);
+        if (isInitial) {
+          isInitial = false;
+          if (entry.isIntersecting) {
+            startPlayback();
+          }
           return;
         }
-        video.pause();
+
+        if (entry.isIntersecting) {
+          startPlayback();
+        } else {
+          video.pause();
+        }
       },
-      { threshold: 0.2 },
+      { threshold: 0.05 },
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
-  }, [prefersReducedMotion]);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -76,36 +109,89 @@ export function Showreel({ src, label, className = "" }: ShowreelProps) {
     setIsMuted(next);
   };
 
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setCurrentTime(video.currentTime);
+    if (!duration && video.duration) {
+      setDuration(video.duration);
+    }
+  };
+
+  const handleScrub = (e: React.MouseEvent<HTMLDivElement>) => {
+    const scrubber = scrubberRef.current;
+    const video = videoRef.current;
+    if (!scrubber || !video || !duration) return;
+
+    const rect = scrubber.getBoundingClientRect();
+    const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    video.currentTime = pos * duration;
+    setCurrentTime(video.currentTime);
+  };
+
+  const progressPercent = duration ? (currentTime / duration) * 100 : 0;
+
   return (
     <figure className={`group relative ${className}`}>
-      {/* Offset gold rule — the print sits slightly proud of its frame. */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -bottom-2.5 -right-2.5 -top-2.5 left-2.5 border border-gold/40"
-      />
+      {/* Sleek rounded cinema monitor container */}
+      <div className="viewfinder-card relative overflow-hidden rounded-lg border border-white/15 bg-ink-soft shadow-[0_24px_50px_rgba(0,0,0,0.6)] transition-all duration-300 hover:border-crimson-bright/70">
+        {/* Subtle camera corner viewfinder brackets on the frame */}
+        <span className="vf-bracket vf-top-left" />
+        <span className="vf-bracket vf-top-right" />
+        <span className="vf-bracket vf-bottom-left" />
+        <span className="vf-bracket vf-bottom-right" />
 
-      <div className="relative overflow-hidden bg-ink-soft shadow-[0_28px_60px_-26px_rgba(0,0,0,0.85)]">
         <video
           ref={videoRef}
           src={src}
           aria-label={label}
-          loop
+          autoPlay
           muted
           playsInline
-          preload="metadata"
+          loop
+          preload="auto"
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onCanPlay={() => {
+            if (videoRef.current) {
+              void videoRef.current.play().catch(() => undefined);
+            }
+          }}
+          onLoadedData={() => {
+            if (videoRef.current) {
+              void videoRef.current.play().catch(() => undefined);
+            }
+          }}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={() => videoRef.current && setDuration(videoRef.current.duration)}
           className="aspect-[9/16] h-full w-full object-cover"
         />
 
-        {/* Grades the foot of the frame so the controls stay legible. */}
+        {/* Gradient scrim for control legibility */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,rgba(23,16,14,0.8)_0%,rgba(23,16,14,0)_100%)]"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,rgba(20,20,24,0.92)_0%,transparent_100%)]"
         />
 
-        {/* Controls surface on hover and whenever focus lands inside. */}
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-3 opacity-0 transition-opacity duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:opacity-100 group-focus-within:opacity-100 max-md:opacity-100">
+        {/* Interactive Razor-Thin Scrubber Bar */}
+        <div
+          ref={scrubberRef}
+          onClick={handleScrub}
+          title="Click to seek timecode"
+          className="group/scrub absolute inset-x-0 bottom-0 z-30 h-3 cursor-pointer flex items-end"
+        >
+          <div className="h-1 w-full bg-white/20 transition-all group-hover/scrub:h-1.5">
+            <div
+              style={{ width: `${progressPercent}%` }}
+              className="relative h-full bg-crimson-bright shadow-[0_0_8px_rgba(217,59,47,0.6)]"
+            >
+              <span className="absolute -top-1 right-0 size-2.5 rounded-full bg-white opacity-0 transition-opacity group-hover/scrub:opacity-100 shadow-[0_0_6px_rgba(217,59,47,0.7)]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Floating play & mute controls */}
+        <div className="absolute inset-x-0 bottom-2.5 flex items-center justify-between gap-2 p-3.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100 max-md:opacity-100 z-20">
           <ReelButton
             onClick={togglePlay}
             label={isPlaying ? "Pause showreel" : "Play showreel"}
@@ -122,12 +208,28 @@ export function Showreel({ src, label, className = "" }: ShowreelProps) {
         </div>
       </div>
 
-      <figcaption className="u-eyebrow mt-3 flex items-center gap-2 text-cream/55">
-        <span
-          aria-hidden
-          className={`size-[5px] rounded-full ${isPlaying ? "bg-gold" : "bg-cream/30"}`}
-        />
-        Showreel
+      {/* Clean, neat, professional monitor status bar with live SMPTE timecode */}
+      <figcaption className="mt-3.5 flex items-center justify-between px-0.5 text-muted">
+        <div className="flex items-center gap-2.5">
+          <span className="tally-dot" />
+          <span className="u-eyebrow text-[0.72rem] tracking-[0.16em] text-cream font-semibold">
+            Showreel
+          </span>
+          <span className="text-xs text-muted/50">&bull;</span>
+          <span className="font-mono text-[0.6875rem] tracking-wider text-muted/90">
+            Directing Cut
+          </span>
+        </div>
+
+        {/* Live SMPTE 24FPS Timecode */}
+        <div className="flex items-center gap-2 font-mono text-[0.6875rem] tracking-wider">
+          <span className="text-muted/60">TC</span>
+          <span className="font-medium text-gold-bright">
+            {formatSMPTE(currentTime)}
+          </span>
+          <span className="text-xs text-muted/40">&bull;</span>
+          <span className="text-muted/80">24 FPS</span>
+        </div>
       </figcaption>
     </figure>
   );
@@ -145,7 +247,7 @@ function ReelButton({ onClick, label, children }: ReelButtonProps) {
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="grid size-8 place-items-center rounded-full border border-cream/25 bg-ink/55 text-cream/80 backdrop-blur-sm transition-colors duration-[var(--duration-fast)] hover:border-gold hover:text-gold active:scale-95"
+      className="grid size-10 min-w-[40px] min-h-[40px] place-items-center rounded-full border border-white/20 bg-ink/80 text-cream backdrop-blur-md transition-all hover:border-crimson-bright hover:bg-crimson-bright hover:text-white active:scale-90"
     >
       {children}
     </button>
@@ -156,7 +258,7 @@ const ICON_PROPS = {
   viewBox: "0 0 16 16",
   fill: "currentColor",
   "aria-hidden": true,
-  className: "size-3.5",
+  className: "size-4",
 } as const;
 
 function PlayIcon() {

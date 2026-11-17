@@ -14,6 +14,7 @@ import { experimental } from "@/content/site";
  * its neighbour.
  */
 export function Experimental() {
+
   return (
     <section
       aria-labelledby="experimental-label"
@@ -52,13 +53,29 @@ export function Experimental() {
             </Reveal>
 
             {film.poster ? (
-              <Wipe index={i} delay={0.08} className="mt-3 overflow-hidden">
-                <Frame
-                  src={film.poster}
-                  alt={film.posterAlt}
-                  sizes="(max-width:768px) 45vw, 20vw"
-                  className="aspect-[16/10] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
-                />
+              <Wipe
+                index={i}
+                delay={0.08}
+                className="viewfinder-card relative mt-3 overflow-hidden rounded-[2px] border border-cocoa/15 transition-all hover:border-crimson-bright group"
+              >
+                <a
+                  href={film.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Watch ${film.title} on YouTube`}
+                  className="block cursor-pointer"
+                >
+                  <span className="vf-bracket vf-top-left" />
+                  <span className="vf-bracket vf-top-right" />
+                  <span className="vf-bracket vf-bottom-left" />
+                  <span className="vf-bracket vf-bottom-right" />
+                  <Frame
+                    src={film.poster}
+                    alt={film.posterAlt}
+                    sizes="(max-width:768px) 45vw, 20vw"
+                    className="aspect-[16/10] w-full transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
+                  />
+                </a>
               </Wipe>
             ) : null}
 

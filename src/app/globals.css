@@ -1,56 +1,59 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------
-   Design tokens — sampled from the approved mockup.
-   Everything visual derives from here. Do not hardcode palette
-   values in components.
+   Design tokens — Elevated A24 Editorial / Modern Cinema Studio
+   High contrast, crystal clear readability, luminous crimson & gold.
    --------------------------------------------------------------- */
 :root {
-  /* Surfaces */
-  --color-ink: #17100e;
-  --color-ink-soft: #211714;
-  --color-wine: #3d1620;
-  --color-wine-soft: #4a1c28;
-  --color-blush: #f7e4dd;
-  --color-blush-soft: #fbeee9;
+  /* Surfaces — Lifted from flat pitch black to modern studio charcoal & obsidian */
+  --color-ink: #141418;
+  --color-ink-soft: #1E1E24;
+  --color-ink-card: #25252E;
+  --color-wine: #2B1218;
+  --color-wine-soft: #3B1822;
+  --color-blush: #F9F3EE;
+  --color-blush-soft: #FFFFFF;
 
-  /* Accent.
-     `gold` is tuned for the dark surfaces. On the blush sections it drops to
-     1.5:1 against the background, so light surfaces use `gold-deep` instead —
-     same bronze family, 5.1:1, clears WCAG AA for body text. */
-  --color-gold: #e9b44a;
-  --color-gold-bright: #f2c85b;
-  --color-gold-deep: #7d5a12;
+  /* Accents — Refined Cinema Crimson & Radiant 35mm Gold */
+  --color-crimson: #C53026;
+  --color-crimson-bright: #D93B2F;
+  --color-crimson-glow: rgba(217, 59, 47, 0.3);
+  --color-crimson-tint: rgba(217, 59, 47, 0.12);
 
-  /* Type on dark */
-  --color-cream: #f3e9e5;
-  --color-muted: #bfaca6;
+  --color-gold: #E5B869;
+  --color-gold-bright: #F7D088;
+  --color-gold-deep: #8E651D;
 
-  /* Type on blush */
-  --color-cocoa: #2a1418;
-  --color-cocoa-muted: #6d4c4c;
+  /* Type — Crisp, brilliant, high-contrast readable */
+  --color-cream: #FFFFFF;
+  --color-body: #E8E5DF;
+  --color-muted: #B8B5AE;
 
-  /* Hairlines */
-  --color-rule-dark: color-mix(in oklab, var(--color-cream) 14%, transparent);
-  --color-rule-light: color-mix(in oklab, var(--color-cocoa) 16%, transparent);
+  /* Type on light blush sections — maximum contrast, rich obsidian-cocoa */
+  --color-cocoa: #14080A;
+  --color-cocoa-muted: #382025;
+
+  /* Hairlines & Card Borders */
+  --color-rule-dark: rgba(255, 255, 255, 0.14);
+  --color-rule-light: rgba(30, 15, 18, 0.15);
+  --color-rule-crimson: rgba(217, 59, 47, 0.35);
 
   /* Type scale — fluid, editorial */
-  --text-eyebrow: 0.6875rem;
-  --text-label: 0.75rem;
-  --text-body: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
-  --text-title: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
-  --text-hero: clamp(2.75rem, 1.6rem + 4.6vw, 5.25rem);
+  --text-eyebrow: 0.75rem;
+  --text-label: 0.8125rem;
+  --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --text-title: clamp(1.5rem, 1.25rem + 1.5vw, 2.75rem);
+  --text-hero: clamp(2.25rem, 1.4rem + 4.5vw, 5.75rem);
 
   /* Letterspacing for the small caps labels */
-  --tracking-eyebrow: 0.22em;
-  --tracking-nav: 0.16em;
+  --tracking-eyebrow: 0.18em;
+  --tracking-nav: 0.14em;
 
   /* Rhythm */
-  --space-section: clamp(3rem, 2rem + 4vw, 6rem);
-  --space-gutter: clamp(1.25rem, 0.8rem + 2vw, 3rem);
+  --space-section: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+  --space-gutter: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
 
-  /* Screenplays are set in Courier by convention — system faces only, so
-     the reading pages cost no extra webfont. */
+  /* Screenplays / Monospace */
   --font-typewriter: ui-monospace, "Courier New", Courier, monospace;
 
   /* Motion */
@@ -58,11 +61,13 @@
   --duration-normal: 320ms;
   --duration-slow: 620ms;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
   --color-ink: var(--color-ink);
   --color-ink-soft: var(--color-ink-soft);
+  --color-ink-card: var(--color-ink-card);
   --color-wine: var(--color-wine);
   --color-wine-soft: var(--color-wine-soft);
   --color-blush: var(--color-blush);
@@ -70,7 +75,10 @@
   --color-gold: var(--color-gold);
   --color-gold-bright: var(--color-gold-bright);
   --color-gold-deep: var(--color-gold-deep);
+  --color-crimson: var(--color-crimson);
+  --color-crimson-bright: var(--color-crimson-bright);
   --color-cream: var(--color-cream);
+  --color-body: var(--color-body);
   --color-muted: var(--color-muted);
   --color-cocoa: var(--color-cocoa);
   --color-cocoa-muted: var(--color-cocoa-muted);
@@ -86,24 +94,214 @@
    --------------------------------------------------------------- */
 html {
   scroll-behavior: smooth;
-  /* Header is sticky; keep anchor targets clear of it. */
-  scroll-padding-top: 4.5rem;
+  scroll-padding-top: 5rem;
+  background-color: var(--color-ink);
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
   background: var(--color-ink);
-  color: var(--color-cream);
+  color: var(--color-body);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--text-body);
-  line-height: 1.65;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
-/* Visible, on-brand keyboard focus everywhere. */
+::selection {
+  background-color: var(--color-crimson-bright);
+  color: #FFFFFF;
+}
+
+/* Ambient Studio Light Mesh — Radiates warmth and kills the gloom */
+.ambient-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  height: 800px;
+  background: radial-gradient(circle at 50% 20%, rgba(217, 59, 47, 0.12) 0%, rgba(229, 184, 105, 0.08) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Visible keyboard focus with bright crimson contrast */
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-crimson-bright);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
+}
+
+/* Hide scrollbar for clean horizontal filmstrip */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ---------------------------------------------------------------
+   Cinematic Studio Graphics & Elevating Details
+   --------------------------------------------------------------- */
+
+/* Camera Viewfinder Brackets on Cards */
+.viewfinder-card {
+  position: relative;
+  transition: transform 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic), box-shadow 0.4s var(--ease-cinematic);
+}
+
+.viewfinder-card:hover {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(217, 59, 47, 0.14);
+}
+
+.vf-bracket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--color-crimson-bright);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 20;
+  transition: transform 0.4s var(--ease-cinematic), opacity 0.4s var(--ease-cinematic);
+}
+
+.vf-top-left {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--color-crimson-bright);
+  border-left: 2px solid var(--color-crimson-bright);
+}
+
+.vf-top-right {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid var(--color-crimson-bright);
+  border-right: 2px solid var(--color-crimson-bright);
+}
+
+.vf-bottom-left {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid var(--color-crimson-bright);
+  border-left: 2px solid var(--color-crimson-bright);
+}
+
+.vf-bottom-right {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--color-crimson-bright);
+  border-right: 2px solid var(--color-crimson-bright);
+}
+
+.viewfinder-card:hover .vf-bracket {
+  opacity: 1;
+}
+
+.viewfinder-card:hover .vf-top-left {
+  transform: translate(-3px, -3px);
+}
+
+.viewfinder-card:hover .vf-top-right {
+  transform: translate(3px, -3px);
+}
+
+.viewfinder-card:hover .vf-bottom-left {
+  transform: translate(-3px, 3px);
+}
+
+.viewfinder-card:hover .vf-bottom-right {
+  transform: translate(3px, 3px);
+}
+
+/* Clean, Sleek Live Tally Indicator */
+.tally-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(217, 59, 47, 0.12);
+  border: 1px solid rgba(217, 59, 47, 0.35);
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-family: var(--font-typewriter);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFA29C;
+}
+
+.tally-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-crimson-bright);
+  box-shadow: 0 0 10px var(--color-crimson-glow);
+  animation: tally-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes tally-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+}
+
+/* Magnetic "Watch →" Link */
+.watch-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-cream);
+  position: relative;
+  padding-bottom: 2px;
+  transition: color var(--duration-fast) ease;
+}
+
+.watch-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: var(--color-crimson-bright);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out-expo);
+}
+
+.watch-link:hover {
+  color: var(--color-crimson-bright);
+}
+
+.watch-link:hover::after {
+  transform: scaleX(1);
+}
+
+.watch-link .arrow {
+  display: inline-block;
+  transition: transform var(--duration-normal) var(--ease-out-expo), color var(--duration-fast) ease;
+}
+
+.watch-link:hover .arrow {
+  transform: translateX(4px);
+  color: var(--color-crimson-bright);
 }
 
 /* ---------------------------------------------------------------
@@ -118,11 +316,11 @@ body {
   font-weight: 500;
 }
 
-/* The gold handwritten annotations scattered around the page. */
+/* Handwritten annotations */
 .u-script {
   font-family: var(--font-script), cursive;
-  color: var(--color-gold);
-  line-height: 1.15;
+  color: var(--color-gold-bright);
+  line-height: 1.25;
   font-weight: 500;
 }
 
@@ -130,14 +328,49 @@ body {
 .u-display {
   font-family: var(--font-display), ui-serif, Georgia, serif;
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 1.1;
+  color: inherit;
 }
 
-/* The script pages: Courier, and the indents the form expects. */
+/* Ensure headings & text inside light/blush sections are always deep, rich cocoa (never invisible white) */
+.bg-blush,
+.bg-blush .u-display,
+.bg-blush h1,
+.bg-blush h2,
+.bg-blush h3,
+.bg-blush h4 {
+  color: var(--color-cocoa);
+}
+
+.bg-blush .text-cocoa {
+  color: var(--color-cocoa);
+}
+
+.bg-blush .text-cocoa-muted {
+  color: var(--color-cocoa-muted);
+}
+
+/* Screenplay container & formatting */
 .u-screenplay {
   font-family: var(--font-typewriter);
-  font-size: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
-  line-height: 1.7;
+  font-size: clamp(0.875rem, 0.85rem + 0.15vw, 0.975rem);
+  line-height: 1.75;
+}
+
+/* Ensure film grain never intercepts clicks or pointer events */
+.film-grain,
+.film-grain svg,
+.film-grain rect {
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Suppress Safari & iOS WebKit native video overlay play icon */
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -152,5 +385,43 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Screenplay Print & PDF Export Stylesheet
+   --------------------------------------------------------------- */
+@media print {
+  header,
+  footer,
+  nav,
+  .print\:hidden,
+  .ambient-glow,
+  .film-grain,
+  .scroll-progress,
+  aside,
+  button {
+    display: none !important;
+  }
+
+  body,
+  main {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .u-screenplay {
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  @page {
+    margin: 1in;
+    size: portrait;
   }
 }
