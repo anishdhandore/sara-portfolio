@@ -365,6 +365,14 @@ body {
   user-select: none !important;
 }
 
+/* Suppress Safari & iOS WebKit native video overlay play icon */
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

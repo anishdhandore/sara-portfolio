@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "motion/react";
 
 type ShowreelProps = {
   src: string;
@@ -24,7 +23,6 @@ function formatSMPTE(seconds: number): string {
 export function Showreel({ src, label, className = "" }: ShowreelProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrubberRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -33,30 +31,63 @@ export function Showreel({ src, label, className = "" }: ShowreelProps) {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || prefersReducedMotion) return;
+    if (!video) return;
+
+    // Explicitly configure attributes required by WebKit / iOS Safari for autoplay
     video.muted = true;
     video.defaultMuted = true;
-    void video.play().catch(() => undefined);
-  }, [prefersReducedMotion]);
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "true");
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || prefersReducedMotion) return;
+    const startPlayback = () => {
+      const p = video.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // If iOS Safari or browser power mode delays auto-play,
+          // resume immediately on the very first touch, click or scroll anywhere on page:
+          const onFirstInteraction = () => {
+            void video.play().catch(() => undefined);
+            window.removeEventListener("touchstart", onFirstInteraction);
+            window.removeEventListener("click", onFirstInteraction);
+            window.removeEventListener("scroll", onFirstInteraction);
+          };
+          window.addEventListener("touchstart", onFirstInteraction, { passive: true, once: true });
+          window.addEventListener("click", onFirstInteraction, { once: true });
+          window.addEventListener("scroll", onFirstInteraction, { passive: true, once: true });
+        });
+      }
+    };
 
+    startPlayback();
+
+    // Intersection Observer: only pause when scrolled completely away (never pause on initial entrance)
+    let isInitial = true;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          void video.play().catch(() => undefined);
+        if (isInitial) {
+          isInitial = false;
+          if (entry.isIntersecting) {
+            startPlayback();
+          }
           return;
         }
-        video.pause();
+
+        if (entry.isIntersecting) {
+          startPlayback();
+        } else {
+          video.pause();
+        }
       },
-      { threshold: 0.2 },
+      { threshold: 0.05 },
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
-  }, [prefersReducedMotion]);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -121,8 +152,13 @@ export function Showreel({ src, label, className = "" }: ShowreelProps) {
           preload="auto"
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onCanPlay={() => {
+            if (videoRef.current) {
+              void videoRef.current.play().catch(() => undefined);
+            }
+          }}
           onLoadedData={() => {
-            if (videoRef.current && !prefersReducedMotion) {
+            if (videoRef.current) {
               void videoRef.current.play().catch(() => undefined);
             }
           }}
