@@ -34,6 +34,8 @@ export function Showreel({ src, label, className = "" }: ShowreelProps) {
   useEffect(() => {
     const video = videoRef.current;
     if (!video || prefersReducedMotion) return;
+    video.muted = true;
+    video.defaultMuted = true;
     void video.play().catch(() => undefined);
   }, [prefersReducedMotion]);
 
@@ -112,12 +114,18 @@ export function Showreel({ src, label, className = "" }: ShowreelProps) {
           ref={videoRef}
           src={src}
           aria-label={label}
-          loop
+          autoPlay
           muted
           playsInline
-          preload="metadata"
+          loop
+          preload="auto"
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onLoadedData={() => {
+            if (videoRef.current && !prefersReducedMotion) {
+              void videoRef.current.play().catch(() => undefined);
+            }
+          }}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => videoRef.current && setDuration(videoRef.current.duration)}
           className="aspect-[9/16] h-full w-full object-cover"
