@@ -53,8 +53,9 @@ export function ContactForm() {
 
     try {
       // Use Web3Forms or gracefully trigger mailto client
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_ACCESS_KEY_HERE";
       const formData = new FormData();
-      formData.append("access_key", "YOUR_ACCESS_KEY_HERE");
+      formData.append("access_key", accessKey);
       formData.append("name", trimmedName);
       formData.append("email", trimmedEmail);
       formData.append("subject", `[${subject}] Inquiry from ${trimmedName}`);
