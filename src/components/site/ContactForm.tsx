@@ -52,46 +52,31 @@ export function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      // Use Web3Forms or gracefully trigger mailto client
-      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_ACCESS_KEY_HERE";
-      const formData = new FormData();
-      formData.append("access_key", accessKey);
-      formData.append("name", trimmedName);
-      formData.append("email", trimmedEmail);
-      formData.append("subject", `[${subject}] Inquiry from ${trimmedName}`);
-      formData.append("message", trimmedMessage);
-      formData.append("from_name", "Sara Dhandore Portfolio");
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          subject,
+          message: trimmedMessage,
+        }),
+      });
 
-      let succeeded = false;
+      const data = await res.json();
 
-      // Attempt async submission if configured, else fallback cleanly
-      try {
-        const res = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json();
-        if (data.success) {
-          succeeded = true;
-        } else {
-          throw new Error("Web3Forms fallback");
-        }
-      } catch {
-        // Fallback: construct mailto trigger
-        const mailtoSubject = encodeURIComponent(`[${subject}] Message from ${trimmedName}`);
-        const mailtoBody = encodeURIComponent(
-          `Hello Sara,\n\n${trimmedMessage}\n\n---\nFrom: ${trimmedName}\nEmail: ${trimmedEmail}\nInquiry: ${subject}`
-        );
-        window.location.href = `mailto:${site.email}?subject=${mailtoSubject}&body=${mailtoBody}`;
-        succeeded = true;
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to send message.");
       }
 
-      if (succeeded) {
-        setIsSubmitted(true);
-      }
-    } catch (err) {
-      console.error(err);
-      setErrorMessage("Failed to send. Please email directly at dhandoresara@gmail.com.");
+      setIsSubmitted(true);
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      setErrorMessage(
+        err?.message || "Failed to send message. Please contact Sara directly at dhandoresara@gmail.com."
+      );
     } finally {
       setIsSubmitting(false);
     }
